@@ -9,5 +9,5 @@ public class ArticleRequestDto {
     private String username;
     private String title;
     private String contents;
-    private String userId;
+    private Long userId;
 }

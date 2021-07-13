@@ -303,8 +303,8 @@
                             <div id="${id}-editarea1" class="edit">
                             <textarea id="${id}-textarea1" class="te-edit field" name="" id="" cols="60" rows="10"></textarea>
                             </div>
-                            <div>작성자 :&nbsp;&nbsp;${username}</div>
-                            <div>작성 시간 :&nbsp;&nbsp;${modifiedAt}</div>
+                            <div class="username01">${username}</div>
+                            <div>${modifiedAt}</div>
                             <div style="margin-left: 575px">
                             <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
                             </div>
@@ -320,6 +320,9 @@
         }
 
         function submitEdit(id) {
+
+            let username = $('.username').text();
+
             let contents = $(`#${id}-textarea1`).val().trim();
             if (isValidContents(contents) == false) {
                 return;
@@ -328,7 +331,7 @@
             if (isValidTitle(title) == false) {
                 return;
             }
-            let data = {'contents': contents, 'title': title};
+            let data = {'username':username, 'contents': contents, 'title': title};
             $.ajax({
                 type: "PUT",
                 url: `/api/articles/${id}`,
@@ -353,6 +356,12 @@
         }
 
         function editPost(id) {
+            let username = $('.username').text();
+            let cur_username = $('.username01').text();
+            if (username != cur_username) {
+                alert("자신의 게시글만 수정 가능합니다.")
+                return;
+            }
             showEdits(id);
             let title = $(`#${id}-title`).text().trim();
             let contents = $(`#${id}-contents`).text().trim();
@@ -386,7 +395,7 @@
 
         function  create_Comment() {
             let article_id = location.search.split('=')[1]
-            let username = genRandomName(10);
+            let username = $('.username').text();
             let comment = $('#write-comment').val();
             // 유저네임 식별코드 짜기 디테일메인 132번줄
             if (isvalidCommnet(comment) == false) {
@@ -432,7 +441,7 @@
         }
 
         function addComments(id, username, comment, modifiedAt) {
-            let tempHTML = `<p style="font-size: large; margin: 20px 0 10px 0" id="${id}-comment_username">${username}<span style="font-size: small; float: right">${modifiedAt}</span></p>
+            let tempHTML = `<p><span style="font-size: large; margin: 20px 0 10px 0" id="${id}-comment_username">${username}</span><span style="font-size: small; float: right">${modifiedAt}</span></p>
                             <p style="margin: 0 0 0 0" id="${id}-comment">${comment}</p>
                             <textarea  id="${id}-edit-comment" class="comment-input te-edit" name="" cols="60" rows="1"  placeholder="댓글을 작성해주세요." onkeydown="resize(this)" onkeyup="resize(this)" ></textarea>
                             <div style="margin-left: 575px">
@@ -448,9 +457,12 @@
         }
 
         function edit_comment(id) {
-           //  let comment_username = (`#${id}-comment_username`).text();
-           //  let cur_username =
-           // 댓글 작성자와 로그인 유저 아이디 비교 디테일메인205펑션
+            let comment_username = $(`#${id}-comment_username`).text();
+            let cur_username = $('.username').text();
+            if (comment_username != cur_username) {
+                alert("자신의 댓글만 수정가능합니다.")
+                return;
+            }
             showEdit_comment(id);
             let comment = $(`#${id}-comment`).text().trim();
 
@@ -463,6 +475,7 @@
             $(`#${id}-edit-btn`).hide();
             $(`#${id}-edit-comment`).show();
             $(`#${id}-comment`).hide();
+            $('.write-comments').hide();
         }
 
         function hideEdit_comment(id) {
@@ -471,13 +484,13 @@
             $(`#${id}-edit-btn`).show();
             $(`#${id}-edit-comment`).hide();
             $(`#${id}-comment`).show();
+            $('.write-comments').show();
         }
 
         function submit_edit_comment(id){
             let article_id = location.search.split('=')[1];
-            let username = $(`#${id}-comment_username`).text();
+            let username = $('.username').text();
             let comment = $(`#${id}-edit-comment`).val();
-        //    댓글 수정창 생성 후 지정
             if (isvalidCommnet(comment) == false) {
                 return;
             }
@@ -500,8 +513,6 @@
         }
 
         function delete_comment(id) {
-            // let comment_user = $(`#${id}-comment_username`).text();
-            // let cur_username =
             $.ajax({
                 type:'DELETE',
                 url:`/api/comments/${id}`,
@@ -560,19 +571,6 @@
             obj.style.height = (12 + obj.scrollHeight) + "px";
         }
 
-        function genRandomName(length) {
-            let result = '';
-            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                let number = Math.random() * charactersLength;
-                let index = Math.floor(number);
-                result += characters.charAt(index);
-            }
-            return result;
-        }
-
-
     </script>
 </head>
 <body>
@@ -586,7 +584,7 @@
     <div class="header">
         <h2>Timeline Service</h2>
         <p>
-            <span th:text="${username}">님 환영합니다.</span>
+            <span class="username" th:text="${username}">님 환영합니다.</span>
             공유하고 싶은 소식을 입력해주세요.
             24시간이 지난 뒤에는 사라집니다.
         </p>

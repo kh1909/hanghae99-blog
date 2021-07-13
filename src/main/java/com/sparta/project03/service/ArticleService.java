@@ -4,7 +4,6 @@ package com.sparta.project03.service;
 import com.sparta.project03.domain.Article;
 import com.sparta.project03.dto.ArticleRequestDto;
 import com.sparta.project03.repository.ArticleRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +21,8 @@ public class ArticleService {
     }
 
     @Transactional
-    public Article creatArticle(ArticleRequestDto requestDto, Long userId) {
-        Article article = new Article(requestDto, userId);
+    public Article creatArticle(ArticleRequestDto requestDto, Long userId, String userName) {
+        Article article = new Article(requestDto, userId, userName);
         articleRepository.save(article);
         return article;
     }

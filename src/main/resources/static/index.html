@@ -283,19 +283,6 @@
       return true;
     }
 
-    // 익명의 username을 만듭니다.
-    function genRandomName(length) {
-      let result = '';
-      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let charactersLength = characters.length;
-      for (let i = 0; i < length; i++) {
-        let number = Math.random() * charactersLength;
-        let index = Math.floor(number);
-        result += characters.charAt(index);
-      }
-      return result;
-    }
-
     $(document).ready(function () {
       // HTML 문서를 로드할 때마다 실행합니다.
       getMessages();
@@ -363,7 +350,7 @@
         }
         // 3. genRandomName 함수를 통해 익명의 username을 만듭니다.
         // 추후 User의 username으로 교체하기!
-        let username = genRandomName(10);
+        let username = $('.username').text();
         // 4. 전달할 data JSON으로 만듭니다.
         let data = {'username': username, 'title':title, 'contents': contents};
         // 5. POST /api/memos 에 data를 전달합니다.
@@ -397,7 +384,7 @@
   <div class="header">
     <h2>Timeline Service</h2>
     <p>
-      <span th:text="${username}">님 환영합니다.</span>
+      <span id="username" th:text="${username}">님 환영합니다.</span>
       공유하고 싶은 소식을 입력해주세요.
       24시간이 지난 뒤에는 사라집니다.
     </p>

@@ -17,7 +17,7 @@ public class Article extends Timestamped {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -30,8 +30,8 @@ public class Article extends Timestamped {
     private Long userId;
 
 
-    public Article(ArticleRequestDto requestDto, Long userId) {
-        this.username = requestDto.getUsername();
+    public Article(ArticleRequestDto requestDto, Long userId, String userName) {
+        this.username = userName;
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.userId = userId;

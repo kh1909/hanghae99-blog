@@ -24,7 +24,8 @@ public class ArticleController {
     public Article creatArticle(@RequestBody ArticleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        로그인 되어 있는 사용자의 테이블 ID
         Long userId = userDetails.getUser().getId();
-        Article article = articleService.creatArticle(requestDto, userId);
+        String userName = userDetails.getUser().getUsername();
+        Article article = articleService.creatArticle(requestDto, userId, userName);
         return article;
     }
 
