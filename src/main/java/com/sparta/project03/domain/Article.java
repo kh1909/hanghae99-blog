@@ -26,11 +26,15 @@ public class Article extends Timestamped {
     @Column(length = 1000, nullable = false)
     private String contents;
 
+    @Column(nullable = false)
+    private Long userId;
 
-    public Article(ArticleRequestDto requestDto) {
+
+    public Article(ArticleRequestDto requestDto, Long userId) {
         this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.userId = userId;
     }
 
     public void update(ArticleRequestDto requestDto) {

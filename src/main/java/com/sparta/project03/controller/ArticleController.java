@@ -2,46 +2,49 @@ package com.sparta.project03.controller;
 
 import com.sparta.project03.domain.Article;
 import com.sparta.project03.dto.ArticleRequestDto;
-import com.sparta.project03.repository.ArticleRepository;
+import com.sparta.project03.security.UserDetailsImpl;
 import com.sparta.project03.service.ArticleService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 public class ArticleController {
 
-    private final ArticleRepository articleRepository;
-    private final ArticleService articleService; //레포지토리 서비스 분리 디티오 서비스 컨트롤러 역활 분리
+    private final ArticleService articleService;
+
+    @Autowired
+    public ArticleController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @PostMapping("/api/articles")
-    public Article createArticle(@RequestBody ArticleRequestDto requestDto) {
-        Article article = new Article(requestDto);
-        return articleRepository.save(article);
+    public Article creatArticle(@RequestBody ArticleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        로그인 되어 있는 사용자의 테이블 ID
+        Long userId = userDetails.getUser().getId();
+        Article article = articleService.creatArticle(requestDto, userId);
+        return article;
     }
 
     @GetMapping("/api/articles")
     public List<Article> readArticle() {
-        return articleRepository.findAllByOrderByModifiedAtDesc();
+        return articleService.readArticles();
     }
 
     @GetMapping("/api/detail/{id}")
     public Article readDetail(@PathVariable Long id) {
-        return articleRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("null"));
+        return articleService.readDetail(id);
     }
 
     @PutMapping("/api/articles/{id}")
     public Long updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
-        return articleService.update(id, requestDto);
+        return articleService.updateArticle(id, requestDto);
     }
 
     @DeleteMapping("/api/articles/{id}")
     public Long deleteArticle(@PathVariable Long id) {
-        articleRepository.deleteById(id);
-        return id;
+        return articleService.deleteArticle(id);
     }
 }

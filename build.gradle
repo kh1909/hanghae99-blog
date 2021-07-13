@@ -29,6 +29,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.json:json:20201115'
     compileOnly "com.fasterxml.jackson.core:jackson-databind:2.9.4"
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 test {
