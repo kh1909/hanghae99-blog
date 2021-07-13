@@ -16,8 +16,7 @@ public class CommentService {
     @Transactional
     public Long update_comment(Long id, CommentRequestDto commentRequestDto) {
         Comment comment = commentRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디가 존재하지않습니다")
-        );
+                () -> new IllegalArgumentException("해당 아이디가 존재하지않습니다"));
         comment.update_comment(commentRequestDto);
         return comment.getId();
     }
