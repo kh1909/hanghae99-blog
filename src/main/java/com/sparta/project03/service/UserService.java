@@ -2,10 +2,15 @@ package com.sparta.project03.service;
 
 import com.sparta.project03.dto.SignupRequestDto;
 import com.sparta.project03.domain.User;
+import com.sparta.project03.exception.ApiException;
+import com.sparta.project03.exception.ApiRequestException;
 import com.sparta.project03.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Optional;
 
@@ -26,7 +31,7 @@ public class UserService {
         // 회원 ID 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
+            throw new ApiRequestException("중복된 사용자 ID 가 존재합니다.");
         }
 
         // 패스워드 인코딩
