@@ -4,28 +4,23 @@ import com.sparta.project03.domain.Article;
 import com.sparta.project03.dto.ArticleRequestDto;
 import com.sparta.project03.security.UserDetailsImpl;
 import com.sparta.project03.service.ArticleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ArticleController {
 
     private final ArticleService articleService;
 
-    @Autowired
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
-    }
-
     @PostMapping("/api/articles")
     public Article creatArticle(@RequestBody ArticleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        로그인 되어 있는 사용자의 테이블 ID
-        Long userId = userDetails.getUser().getId();
         String userName = userDetails.getUser().getUsername();
-        Article article = articleService.creatArticle(requestDto, userId, userName);
+        Article article = articleService.creatArticle(requestDto, userName);
         return article;
     }
 

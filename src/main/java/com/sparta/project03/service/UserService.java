@@ -2,28 +2,19 @@ package com.sparta.project03.service;
 
 import com.sparta.project03.dto.SignupRequestDto;
 import com.sparta.project03.domain.User;
-import com.sparta.project03.exception.ApiException;
 import com.sparta.project03.exception.ApiRequestException;
 import com.sparta.project03.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
 
     public void registerUser(SignupRequestDto requestDto) {

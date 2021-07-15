@@ -3,7 +3,6 @@ package com.sparta.project03.domain;
 import com.sparta.project03.dto.CommentRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
