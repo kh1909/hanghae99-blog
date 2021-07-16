@@ -21,12 +21,12 @@ public class Comment extends Timestamped {
     @Column(length = 1000, nullable = false)
     private String comment;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String username;
 
-    public Comment(CommentRequestDto requestDto) {
+    public Comment(CommentRequestDto requestDto, String userName) {
         this.article_id = requestDto.getArticle_id();
-        this.username = requestDto.getUsername();
+        this.username = userName;
         this.comment = requestDto.getComment();
     }
 

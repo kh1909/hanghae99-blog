@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="/css/style.css">
-  <meta charset="UTF-8">
-  <title>회원가입 페이지</title>
-  <script>
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+    <script>
+    </script>
 </head>
 <body>
 <div id="login-form">
-  <div id="login-title">Sign up Select Shop</div>
+    <div id="login-title">회원가입</div>
 
-  <form action="/user/signup" method="post">
-    <div class="login-id-label">Username</div>
-    <input type="text" name="username" placeholder="Username" class="login-input-box">
+    <form action="/user/signup" method="post">
+        <div class="login-id-label">회원 아이디 <span style="font-size: 12px">최소 3자 (영문 대소문자,숫자 포함)</span></div>
+        <input type="text" name="username" placeholder="아이디를 입력해주세요." class="login-input-box" id="username">
+        <div th:if="${message} =='유효하지 않은 아이디입니다.'" class="alert alert-danger" role="alert">유효하지 않은 아이디입니다.</div>
+        <div th:if="${message} =='중복된 아이디입니다.'" class="alert alert-danger" role="alert">중복된 아이디 입니다.</div>
 
-    <div class="login-id-label">Password</div>
-    <input type="password" name="password" class="login-input-box">
+        <div class="login-id-label">비밀번호 <span style="font-size: 12px">최소 4자 (아이디와 동일한 문자를 포함할 수 없습니다)</span></div>
+        <input type="password" name="password" placeholder="비밀번호를 입력해주세요." class="login-input-box" id="password">
+        <div th:if="${message} =='유효하지 않은 비밀번호입니다.'" class="alert alert-danger" role="alert">유효하지 않은 비밀번호입니다.</div>
 
-    <div class="login-id-label">E-mail</div>
-    <input type="text" name="email" placeholder="E-mail" class="login-input-box">
+        <div class="login-id-label">비밀번호 확인</div>
+        <input type="password" name="passwordConfirm" placeholder="비밀번호를 다시 입력해주세요." class="login-input-box"
+               id="passwordConfirm">
+        <div th:if="${message} =='비밀번호가 일치하지 않습니다.'" class="alert alert-danger" role="alert">비밀번호가 일치하지 않습니다.</div>
 
-    <button id="login-id-submit" >회원 가입</button>
-  </form>
+        <div class="login-id-label">이메일</div>
+        <input type="text" name="email" placeholder="이메일을 입력해주세요" class="login-input-box" id="email">
+        <div th:if="${message} =='유효하지 않은 이메일주소입니다.'" class="alert alert-danger" role="alert">유효하지 않은 이메일주소입니다.</div>
+
+        <button id="login-id-submit">회원 가입</button>
+    </form>
 </div>
 </body>
 </html>

@@ -11,13 +11,23 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        model.addAttribute("username", userDetails.getUsername());
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            model.addAttribute("username", username);
+            return "index";
+        }
+        model.addAttribute("message","null" );
         return "index";
     }
 
     @GetMapping("/detail")
     public String login(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        model.addAttribute("username", userDetails.getUsername());
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            model.addAttribute("username", username);
+            return "detail";
+        }
+        model.addAttribute("message","null" );
         return "detail";
     }
 }

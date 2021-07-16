@@ -196,6 +196,7 @@
             width: 14px;
             height: 18px;
         }
+
         .detail-contents {
             margin: auto;
             display: block;
@@ -214,6 +215,7 @@
             margin-bottom: 2px;
             font-size: large;
         }
+
         input.title-input::placeholder {
             width: 216px;
             height: 16px;
@@ -246,6 +248,7 @@
             padding: 1px 3px 1px 3px;
             margin-left: 550px;
         }
+
         .comments {
             display: block;
             margin: 100px auto 100px auto;
@@ -260,6 +263,13 @@
 
         #cards-box {
             margin-top: 12px;
+        }
+
+        .signup-box {
+            display: block;
+            position: absolute;
+            right: 30px;
+            top: 30px;
         }
     </style>
     <script>
@@ -288,6 +298,7 @@
                 }
             })
         }
+
         function addDetail(id, username, title, contents, modifiedAt) {
             let tempHtml = `<div class="add-Detail">
                             <div id="${id}-title" class="text" style="font-size: xx-large">
@@ -309,7 +320,7 @@
                             <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
                             </div>
                             <div style="margin-left: 560px">
-                            <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
+                            <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="confirm_delete('${id}')">
                             <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
                             </div>
                             <div class="footer">
@@ -331,7 +342,7 @@
             if (isValidTitle(title) == false) {
                 return;
             }
-            let data = {'username':username, 'contents': contents, 'title': title};
+            let data = {'username': username, 'contents': contents, 'title': title};
             $.ajax({
                 type: "PUT",
                 url: `/api/articles/${id}`,
@@ -344,13 +355,21 @@
             })
         }
 
+        function confirm_delete(id) {
+            if (!confirm('게시글을 삭제하시겠습니까?')) {
+                return;
+            } else {
+                deleteOne(id)
+            }
+        }
+
         function deleteOne(id) {
             $.ajax({
                 type: "DELETE",
                 url: `/api/articles/${id}`,
                 success: function (response) {
                     alert('게시글 삭제가 완료되었습니다.');
-                    window.location.href="/";
+                    window.location.href = "/";
                 }
             })
         }
@@ -369,6 +388,7 @@
             $(`#${id}-textarea`).val(title);
             $(`#${id}-textarea1`).val(contents);
         }
+
         function showEdits(id) {
             $(`#${id}-editarea`).show();
             $(`#${id}-editarea1`).show();
@@ -393,7 +413,7 @@
             $('.comments').show();
         }
 
-        function  create_Comment() {
+        function create_Comment() {
             let article_id = location.search.split('=')[1]
             let username = $('.username').text();
             let comment = $('#write-comment').val();
@@ -408,14 +428,22 @@
             }
 
             $.ajax({
-                type:'POST',
-                url:'/api/comments',
+                type: 'POST',
+                url: '/api/comments',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                success: function (response){
+                success: function (response) {
                     console.log(data)
                     alert('댓글 작성이 완료되었습니다.')
                     window.location.reload();
+                },
+                error: function (response) {
+                    alert("비회원은 댓글을 작성할 수 없습니다.");
+                    if (!confirm('로그인 페이지로 이동하시겠습니까?')) {
+                        return;
+                    } else {
+                        window.location.href = "/user/login";
+                    }
                 }
             })
         }
@@ -426,7 +454,7 @@
                 type: 'GET',
                 url: `/api/comments/${index}`,
                 success: function (response) {
-                    for (let i=0;i<response.length;i++) {
+                    for (let i = 0; i < response.length; i++) {
                         console.log(response[i])
                         let comment = response[i];
                         addComments(
@@ -448,7 +476,7 @@
                                 <img id="${id}-edit-btn" src="images/edit.png" alt="" onclick="edit_comment(${id})">
                             </div>
                             <div style="margin-left: 560px">
-                                <img id="${id}-delete-btn" src="images/delete.png" alt="" onclick="delete_comment(${id})">
+                                <img id="${id}-delete-btn" src="images/delete.png" alt="" onclick="confirm_delete_comment(${id})">
                                 <img id="${id}-done-btn" src="images/done.png" alt="" onclick="submit_edit_comment(${id})">
                             </div>
                             <hr style="width: 600px">`
@@ -487,7 +515,7 @@
             $('.write-comments').show();
         }
 
-        function submit_edit_comment(id){
+        function submit_edit_comment(id) {
             let article_id = location.search.split('=')[1];
             let username = $('.username').text();
             let comment = $(`#${id}-edit-comment`).val();
@@ -496,26 +524,34 @@
             }
             let data = {
                 'article_id': article_id,
-                'username':username,
-                'comment':comment
+                'username': username,
+                'comment': comment
             }
 
             $.ajax({
-                type:'PUT',
-                url:`/api/comments/${id}`,
-                contentType:'application/json',
-                data:JSON.stringify(data),
-                success:function (response) {
+                type: 'PUT',
+                url: `/api/comments/${id}`,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
                     alert('댓글 수정이 완료되었습니다.')
                     window.location.reload();
                 }
             })
         }
 
+        function confirm_delete_comment(id) {
+            if (!confirm('댓글을 삭제하시겠습니까?')) {
+                return;
+            } else {
+                delete_comment(id)
+            }
+        }
+
         function delete_comment(id) {
             $.ajax({
-                type:'DELETE',
-                url:`/api/comments/${id}`,
+                type: 'DELETE',
+                url: `/api/comments/${id}`,
                 success: function (response) {
                     alert('댓글 삭제가 완료되었습니다.')
                     window.location.reload();
@@ -567,13 +603,22 @@
         }
 
         function resize(obj) {
-            obj.style.height = "1px";
+            obj.style.height = "82px";
             obj.style.height = (12 + obj.scrollHeight) + "px";
         }
 
     </script>
 </head>
 <body>
+<div  class="signup-box">
+    <div th:unless="${username}">
+        <a style="cursor: pointer; text-decoration: none; color: white;" href="/user/signup" >회원가입</a>
+        <a style="cursor: pointer; text-decoration: none; color: white;" href="/user/login" >로그인</a>
+    </div>
+    <div th:if="${username}">
+        <a style="cursor: pointer; text-decoration: none; color: white;" href="/user/logout">로그아웃</a>
+    </div>
+</div>
 <div class="background-header">
 
 </div>
@@ -584,7 +629,7 @@
     <div class="header">
         <h2>Timeline Service</h2>
         <p>
-            <span class="username" th:text="${username}"></span><span>님 환영합니다.</span><br>
+            <span class="username" th:text="${username}"></span> <span th:if="${username}">님 환영합니다.</span><br>
             공유하고 싶은 소식을 입력해주세요.
             24시간이 지난 뒤에는 사라집니다.
         </p>
@@ -595,22 +640,23 @@
         <hr>
         <span style="font-size: large">댓글</span>
         <div class="comment-list">
-<!--        <p style="font-size: x-large; margin-bottom: 0">username</p>-->
-<!--        <p style="margin-top: 0">comment</p>-->
-<!--        <div class="comment-edit-btn">-->
-<!--            <img src="images/edit.png" alt="">-->
-<!--            <img src="images/delete.png" alt="">-->
-<!--            <img src="images/done.png" alt="">-->
-<!--        </div>-->
-<!--        <hr style="width: 600px">-->
+            <!--        <p style="font-size: x-large; margin-bottom: 0">username</p>-->
+            <!--        <p style="margin-top: 0">comment</p>-->
+            <!--        <div class="comment-edit-btn">-->
+            <!--            <img src="images/edit.png" alt="">-->
+            <!--            <img src="images/delete.png" alt="">-->
+            <!--            <img src="images/done.png" alt="">-->
+            <!--        </div>-->
+            <!--        <hr style="width: 600px">-->
 
         </div>
-    <div class="write-comments">
-            <textarea id="write-comment" class="comment-input te-edit" name="" cols="60" rows="1" placeholder="댓글을 작성해주세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+        <div class="write-comments">
+            <textarea id="write-comment" class="comment-input te-edit" name="" cols="60" rows="1"
+                      placeholder="댓글을 작성해주세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
             <button class="btn-creat-comment" onclick="create_Comment()">
                 등록
             </button>
-    </div>
+        </div>
     </div>
 </div>
 </body>

@@ -17,8 +17,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public Comment creatComment(CommentRequestDto requestDto) {
-        Comment comment = new Comment(requestDto);
+    public Comment creatComment(CommentRequestDto requestDto, String userName) {
+        Comment comment = new Comment(requestDto, userName);
         commentRepository.save(comment);
         return comment;
     }

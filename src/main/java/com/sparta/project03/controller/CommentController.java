@@ -2,8 +2,10 @@ package com.sparta.project03.controller;
 
 import com.sparta.project03.domain.Comment;
 import com.sparta.project03.dto.CommentRequestDto;
+import com.sparta.project03.security.UserDetailsImpl;
 import com.sparta.project03.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +17,9 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/api/comments")
-    public Comment creatComment(@RequestBody CommentRequestDto requestDto) {
-        Comment comment = commentService.creatComment(requestDto);
+    public Comment creatComment(@RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String userName = userDetails.getUser().getUsername();
+        Comment comment = commentService.creatComment(requestDto, userName);
         return comment;
     }
 

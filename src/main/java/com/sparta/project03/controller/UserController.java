@@ -1,8 +1,10 @@
 package com.sparta.project03.controller;
 
 import com.sparta.project03.dto.SignupRequestDto;
+import com.sparta.project03.security.UserDetailsImpl;
 import com.sparta.project03.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,22 +22,26 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/user/login/error")
-    public String loginError(Model model) {
-        model.addAttribute("loginError", true);
-        return "login";
-    }
-
     // 회원 가입 페이지
     @GetMapping("/user/signup")
     public String signup() {
         return "signup";
     }
 
-    // 회원 가입 요청 처리
+    @GetMapping("/user/login/error")
+    public String loginError(Model model) {
+        model.addAttribute("loginError", true);
+        return "login";
+    }
+
     @PostMapping("/user/signup")
-    public String registerUser(SignupRequestDto requestDto) {
-        userService.registerUser(requestDto);
-        return "redirect:/";
+    public String registerUser(SignupRequestDto requestDto, Model model) {
+        try {
+            userService.registerUser(requestDto);
+        }catch (IllegalArgumentException ex){
+            model.addAttribute("message", ex.getMessage());
+            return "signup";
+        }
+        return "login";
     }
 }

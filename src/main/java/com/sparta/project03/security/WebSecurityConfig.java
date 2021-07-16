@@ -2,6 +2,7 @@ package com.sparta.project03.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -30,17 +31,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()
                 // h2-console 을 login 없이 허용
                 .antMatchers("/h2-console/**").permitAll()
+                // 비회원 게시물 조회 허용
+                .antMatchers("/").permitAll()
+                .antMatchers("/api/articles").permitAll()
+                // 비회원 상세보기 허용
+                .antMatchers("/api/comments/**").permitAll()
+                .antMatchers("/detail").permitAll()
+                .antMatchers("/api/detail/**").permitAll()
+                .antMatchers("/api/comment/**").permitAll()
                 // 그 외 모든 요청은 인증과정 필요
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/user/login")
+                .failureUrl("/user/login/error")
                 .loginProcessingUrl("/user/login")
-                .defaultSuccessUrl("/")
                 .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/user/logout")
+                .logoutUrl("/user/logout").logoutSuccessUrl("/")
                 .permitAll();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
